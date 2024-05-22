@@ -1,3 +1,28 @@
+/**
+ * @private
+ * @summary "Randomly" picks an element from the left array and combines it with one form right.
+ * @description
+ *  This function is a copy paste implementation from docker_names in golang.
+ *  Will never return "boring_wozniak".
+ *  The left array should be an array of adjectives, where as the right array should be
+ *  an individuals surname. This results in funny names like angry_bohr or prickly_murdock.
+ * @param {Array} left - An array of strings to be used as the left  word in docker name.
+ * @param {Array} right - An array of strings to be used as the right word in docker name.
+ * @param {Object} randgen - The random number generator to be used to generate the docker name.
+ * @returns {string}
+ */
+function generateName(left, right, randgen) {
+	var first = left[Math.floor((randgen.random() * left.length))];
+	var second = right[Math.floor((randgen.random() * right.length))];
+	var result = first + "_" + second;
+
+	/* Steve Wozniak is not boring. This is part of the docker names spec. */
+	if (result === "boring_wozniak") {
+		return generateName(left, right, randgen);
+	}
+	return result;
+}
+
 
 /**
  * @summary A random number generator initialised from a seed
@@ -54,32 +79,6 @@ RandomFromSeed.prototype.random = function(min, max) {
 		return this.randomGenerator();
 	}
 };
-
-/**
- * @private
- * @summary "Randomly" picks an element from the left array and combines it with one form right.
- * @description
- *  This function is a copy paste implementation from docker_names in golang.
- *  Will never return "boring_wozniak".
- *  The left array should be an array of adjectives, where as the right array should be
- *  an individuals surname. This results in funny names like angry_bohr or prickly_murdock.
- * @param {Array} left - An array of strings to be used as the left  word in docker name.
- * @param {Array} right - An array of strings to be used as the right word in docker name.
- * @param {number|string|undefined} seed - The seed to be used to generate the docker name.
- * @returns {string}
- */
-function generateName(left, right, seed) {
-	var generator = seed ? new RandomFromSeed(seed) : Math;
-	var first = left[Math.floor((generator.random() * left.length))];
-	var second = right[Math.floor((generator.random() * right.length))];
-	var result = first + "_" + second;
-
-	/* Steve Wozniak is not boring. This is part of the docker names spec. */
-	if (result === "boring_wozniak") {
-		return generateName(left, right, seed ? seed.toString() + seed.toString() : null);
-	}
-	return result;
-}
 
 function DockerNames() {
 	this.left = [
@@ -441,12 +440,24 @@ function DockerNames() {
  * @summary Generates a random docker style name.
  *
  * @param {boolean|number} [appendNumber] - Adds a random number to the resulting docker name.
- * @param {number|string|undefined} seed - The seed to be used to generate the docker name.
+ * @param {number|string|undefined|Object} generator - The seed or generator to be used to generate the docker name.
  * @returns {string}
  */
-DockerNames.prototype.getRandomName = function(appendNumber, seed) {
+DockerNames.prototype.getRandomName = function(appendNumber, generator) {
 	var rand = (appendNumber === true || appendNumber > 0) ? String(Math.floor((Math.random() * 9) + 1)) : "";
-	return generateName(this.left, this.right, seed) + rand;
+
+	var randgen = Math;
+	if (generator) {
+		// If a random number generator was given
+		if (typeof generator.random == 'function') {
+			randgen = generator;
+		}
+		// Else treat it as a seed
+		else {
+			randgen = new RandomFromSeed(generator);
+		}
+	}
+	return generateName(this.left, this.right, randgen) + rand;
 };
 
 module.exports = new DockerNames();

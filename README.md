@@ -36,6 +36,13 @@ $ brave_ride
 ```
 `**`(Antti Sykäri's algorithm is used for seedable pseudo random number generator)
 
+You can pass your own custom random number generator, by supplying an object with a method `random` method (that returns values greater than or equal to 0 and less than 1):
+```javascript
+const dockerNames = require('docker-names');
+console.log(dockerNames.getRandomName(false, {random : () => ((Math.random() + Math.random()) / 2)})); // Example of a custom random number generator
+console.log(dockerNames.getRandomName(false, {random : () => 0.213456})); // Example of a not so random number generator (that will return determined_curie)
+```
+
 ### Word Lists
 
 This module exports the full docker name lists as two arrays.
