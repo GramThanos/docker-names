@@ -28,6 +28,14 @@ $ backstabbing_roentgen5
 ```
 `*` This uses Math.random which means its not very random. These names should never be used as any sort of unique id. The names are mostly applicable for small lists of ephemeral objects that you want to have easy to remember identifiers for.
 
+Seeds** can be used to generate the same name for the same seed:
+```javascript
+const dockerNames = require('docker-names');
+console.log(dockerNames.getRandomName(false, 'my-seed-here')); // Will always return the same name if the seed 'my-seed-here' is given
+$ brave_ride
+```
+`**`(Antti Sykäri's algorithm is used for seedable pseudo random number generator)
+
 ### Word Lists
 
 This module exports the full docker name lists as two arrays.
