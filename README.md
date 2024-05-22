@@ -41,6 +41,11 @@ You can pass your own custom random number generator, by supplying an object wit
 const dockerNames = require('docker-names');
 console.log(dockerNames.getRandomName(false, {random : () => ((Math.random() + Math.random()) / 2)})); // Example of a custom random number generator
 console.log(dockerNames.getRandomName(false, {random : () => 0.213456})); // Example of a not so random number generator (that will return determined_curie)
+
+// Or set it globally for all names generations
+dockerNames.random_number_generator = {random : () => ((Math.random() + Math.random()) / 2)};
+console.log(dockerNames.getRandomName());
+console.log(dockerNames.getRandomName());
 ```
 
 ### Word Lists

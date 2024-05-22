@@ -434,6 +434,8 @@ function DockerNames() {
 
 	this.adjectives = this.left;
 	this.surnames = this.right;
+
+	this.random_number_generator = Math;
 }
 
 /**
@@ -446,7 +448,7 @@ function DockerNames() {
 DockerNames.prototype.getRandomName = function(appendNumber, generator) {
 	var rand = (appendNumber === true || appendNumber > 0) ? String(Math.floor((Math.random() * 9) + 1)) : "";
 
-	var randgen = Math;
+	var randgen = this.random_number_generator;
 	if (generator) {
 		// If a random number generator was given
 		if (typeof generator.random == 'function') {
